@@ -1,0 +1,4 @@
+SELECT
+    CAST(SESSION_ID AS STRING) AS SESSION_ID,
+    PAGE_NAME
+FROM {{ source('web', 'PAGE_VIEWS') }}

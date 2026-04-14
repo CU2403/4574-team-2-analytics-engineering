@@ -1,0 +1,7 @@
+SELECT
+    CLIENT_ID,
+    IP,
+    OS,
+    SESSION_AT,
+    CAST(SESSION_ID AS STRING) AS SESSION_ID
+FROM {{ source('web', 'SESSIONS')}}
