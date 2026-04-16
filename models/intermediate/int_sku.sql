@@ -23,7 +23,7 @@ item_orders_with_returns as (
         io.item_name,
         io.price_per_unit,
         io.units_sold,
-        r.returned_at,
+        r.returned_date,
         r.is_refunded
     from item_orders as io
     left join {{ ref('base_returns') }} as r
