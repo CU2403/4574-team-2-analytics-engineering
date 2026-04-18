@@ -1,0 +1,206 @@
+version: 2
+
+models:
+  - name: dim_client
+    description: The client information, including browsing and screening activities.
+    columns:
+      - name: CLIENT_ID
+        description: The unique ID that assigned to clients
+        tests:
+          - unique
+          - not_null
+      - name: CLIENT_NAME
+        description: The name of client
+      - name: IP
+        description: The IP address of a client
+      - name: OS
+        description: The device type of a client
+      - name: FIRST_SESSION_AT
+        description: The time when a client first browse the web
+      - name: LAST_SESSION_AT
+        description: The time when a client last browse the web
+      - name: TOTAL_SESSIONS
+        description: The number of time a client browse the web
+      - name: FIRST_ORDER_AT
+        description: The time when a client first made the order
+      - name: LAST_ORDER_AT
+        description: The time when a client last made the order
+      - name: TOTAL_ORDERS
+        description: The total number of orders of a client
+  - name: dim_employee
+    description: The employee information, including employment status and compensation details.
+    columns:
+      - name: EMPLOYEE_ID
+        description: The unique ID assigned to each employee
+        tests:
+          - unique
+          - not_null
+      - name: HIRE_DATE
+        description: The date when the employee was hired
+      - name: QUIT_DATE
+        description: The date when the employee left the company
+      - name: CITY
+        description: The city where the employee is located
+      - name: ANNUAL_SALARY
+        description: The annual salary of the employee
+      - name: TITLE
+        description: The job title of the employee
+
+  - name: dim_finance
+    description: The daily finance summary, including revenue, costs, profit, and employee-related expense estimates.
+    columns:
+      - name: FINANCE_DATE
+        description: The date of the finance record
+        tests:
+          - unique
+          - not_null
+      - name: GROSS_REVENUE
+        description: The total gross revenue before refunds and deductions
+      - name: REFUNDED_REVENUE
+        description: The total revenue refunded to customers
+      - name: NET_REVENUE
+        description: The net revenue after refunds
+      - name: SHIPPING_COST
+        description: The total shipping cost incurred
+      - name: TECH_TOOL_EXPENSE
+        description: The total expense on technology tools
+      - name: WAREHOUSE_EXPENSE
+        description: The total warehouse-related expense
+      - name: OTHER_EXPENSE
+        description: The total amount of other miscellaneous expenses
+      - name: RAW_HR_EXPENSE
+        description: The raw human resources expense recorded from source data
+      - name: ACTIVE_EMPLOYEE_COUNT
+        description: The number of active employees on the finance date
+      - name: ESTIMATED_PAYROLL_EXPENSE
+        description: The estimated payroll expense based on active employees
+      - name: TOTAL_COSTS_BOOKED
+        description: The total booked costs recorded on the finance date
+      - name: TOTAL_COSTS_ESTIMATED
+        description: The total estimated costs on the finance date
+      - name: BOOKED_PROFIT
+        description: The profit calculated using booked costs
+      - name: ESTIMATED_PROFIT
+        description: The profit calculated using estimated costs
+
+  - name: dim_order
+    description: The order-level information, including customer, payment, shipping, refund, and revenue details.
+    columns:
+      - name: ORDER_ID
+        description: The unique ID assigned to each order
+        tests:
+          - unique
+          - not_null
+      - name: SESSION_ID
+        description: The session ID associated with the order
+      - name: CLIENT_ID
+        description: The unique ID assigned to the client who placed the order
+      - name: ORDER_AT_TS
+        description: The timestamp when the order was placed
+      - name: CLIENT_NAME
+        description: The name of the client who placed the order
+      - name: PAYMENT_INFO
+        description: The payment information associated with the order
+      - name: PAYMENT_METHOD
+        description: The payment method used for the order
+      - name: PHONE
+        description: The phone number of the client
+      - name: SHIPPING_ADDRESS
+        description: The shipping address of the order
+      - name: SHIPPING_COST
+        description: The shipping cost charged for the order
+      - name: STATE
+        description: The state of the shipping address
+      - name: TAX_RATE
+        description: The tax rate applied to the order
+      - name: UNIQUE_ITEMS_ORDERED
+        description: The number of unique items included in the order
+      - name: TOTAL_UNITS_ORDERED
+        description: The total number of units included in the order
+      - name: AVG_PRICE_PER_UNIT
+        description: The average price per unit in the order
+      - name: GROSS_ITEM_REVENUE
+        description: The gross revenue generated by the items in the order
+      - name: RETURNED_DATE
+        description: The date when the order was returned
+      - name: IS_REFUNDED
+        description: Indicates whether the order has been refunded
+      - name: IS_REFUNDED_FLAG
+        description: A numeric flag indicating whether the order has been refunded
+      - name: NET_ITEM_REVENUE
+        description: The net revenue generated by the order after refund adjustment
+
+  - name: dim_session
+    description: The session summary, including browsing, item view, cart, and order activities.
+    columns:
+      - name: SESSION_ID
+        description: The unique ID assigned to each browsing session
+        tests:
+          - unique
+          - not_null
+      - name: CLIENT_ID
+        description: The unique ID assigned to the client
+      - name: SESSION_AT_TS
+        description: The timestamp when the session started
+      - name: IP
+        description: The IP address of the client
+      - name: OS
+        description: The operating system or device type of the client
+      - name: TOTAL_PAGE_VIEWS
+        description: The total number of page views in the session
+      - name: TOTAL_ITEM_VIEWS
+        description: The total number of item views in the session
+      - name: UNIQUE_ITEMS_VIEWED
+        description: The number of unique items viewed in the session
+      - name: UNIQUE_PAGES_VIEWED
+        description: The number of unique pages viewed in the session
+      - name: TOTAL_ADD_TO_CART_QUANTITY
+        description: The total quantity of items added to cart in the session
+      - name: TOTAL_REMOVE_FROM_CART_QUANTITY
+        description: The total quantity of items removed from cart in the session
+      - name: ADD_TO_CART_EVENTS
+        description: The number of add-to-cart events in the session
+      - name: REMOVE_FROM_CART_EVENTS
+        description: The number of remove-from-cart events in the session
+      - name: FIRST_ITEM_VIEW_AT
+        description: The timestamp when the client first viewed an item in the session 
+      - name: LAST_ITEM_VIEW_AT
+        description: The timestamp when the client last viewed an item in the session
+      - name: TOTAL_ORDERS
+        description: The total number of orders created in the session
+      - name: FIRST_ORDER_AT
+        description: The timestamp when the first order was placed in the session
+      - name: LAST_ORDER_AT
+        description: The timestamp when the last order was placed in the session
+      - name: TOTAL_SHIPPING_COST
+        description: The total shipping cost generated by orders in the session
+      - name: HAS_PAGE_VIEW
+        description: Indicates whether the session contains at least one page view
+      - name: HAS_ITEM_VIEW
+        description: Indicates whether the session contains at least one item view
+      - name: HAS_ADD_TO_CART
+        description: Indicates whether the session contains at least one add-to-cart event
+      - name: HAS_ORDER
+        description: Indicates whether the session contains at least one order
+
+  - name: dim_sku
+    description: The SKU-level sales summary, including unit sales, returns, pricing, and revenue metrics.
+    columns:
+      - name: ITEM_NAME
+        description: The name of the item
+        tests:
+          - unique
+          - not_null 
+      - name: GROSS_UNITS_SOLD
+        description: The total number of units sold before returns
+      - name: RETURNED_UNITS
+        description: The total number of units returned
+      - name: NET_UNITS_SOLD
+        description: The net number of units sold after returns
+      - name: AVG_PRICE_PER_UNIT
+        description: The average selling price per unit
+      - name: NET_REVENUE
+        description: The net revenue generated by the item
+
+
+      
