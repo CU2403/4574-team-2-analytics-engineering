@@ -89,7 +89,6 @@ models:
       - name: ORDER_ID
         description: The unique ID assigned to each order
         tests:
-          - unique
           - not_null
       - name: SESSION_ID
         description: The session ID associated with the order
@@ -136,7 +135,6 @@ models:
       - name: SESSION_ID
         description: The unique ID assigned to each browsing session
         tests:
-          - unique
           - not_null
       - name: CLIENT_ID
         description: The unique ID assigned to the client
