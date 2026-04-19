@@ -29,9 +29,15 @@ returns as (
 
     select
         order_id,
-        returned_date,
-        is_refunded
+        min(returned_date) as returned_date,
+        max(
+            case
+                when lower(coalesce(is_refunded, 'no')) = 'yes' then 1
+                else 0
+            end
+        ) as is_refunded_flag
     from {{ ref('base_returns') }}
+    group by 1
 
 ),
 
@@ -49,7 +55,7 @@ item_metrics as (
 
 ),
 
-final as (
+joined as (
 
     select
         o.order_id,
@@ -71,15 +77,10 @@ final as (
         coalesce(i.gross_item_revenue, 0) as gross_item_revenue,
 
         r.returned_date,
-        r.is_refunded,
+        coalesce(r.is_refunded_flag, 0) as is_refunded_flag,
 
         case
-            when lower(coalesce(r.is_refunded, 'no')) = 'yes' then 1
-            else 0
-        end as is_refunded_flag,
-
-        case
-            when lower(coalesce(r.is_refunded, 'no')) = 'yes' then 0
+            when coalesce(r.is_refunded_flag, 0) = 1 then 0
             else coalesce(i.gross_item_revenue, 0)
         end as net_item_revenue
 
@@ -90,6 +91,17 @@ final as (
         on o.session_id = i.session_id
     left join returns as r
         on o.order_id = r.order_id
+
+),
+
+final as (
+
+    select *
+    from joined
+    qualify row_number() over (
+        partition by order_id
+        order by client_id, session_id
+    ) = 1
 
 )
 
