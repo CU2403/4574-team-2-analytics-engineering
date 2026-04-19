@@ -2,11 +2,12 @@ with sessions as (
 
     select
         session_id,
-        client_id,
-        try_to_timestamp_ntz(session_at) as session_at_ts,
-        ip,
-        os
+        min(client_id) as client_id,
+        min(try_to_timestamp_ntz(session_at)) as session_at_ts,
+        min(ip) as ip,
+        min(os) as os
     from {{ ref('base_sessions') }}
+    group by 1
 
 ),
 
@@ -38,19 +39,6 @@ item_view_metrics as (
 
 ),
 
-order_metrics as (
-
-    select
-        session_id,
-        count(distinct order_id) as total_orders,
-        min(order_at_ts) as first_order_at,
-        max(order_at_ts) as last_order_at,
-        sum(coalesce(shipping_cost, 0)) as total_shipping_cost
-    from {{ ref('base_orders') }}
-    group by 1
-
-),
-
 final as (
 
     select
@@ -72,11 +60,6 @@ final as (
         i.first_item_view_at,
         i.last_item_view_at,
 
-        coalesce(o.total_orders, 0) as total_orders,
-        o.first_order_at,
-        o.last_order_at,
-        coalesce(o.total_shipping_cost, 0) as total_shipping_cost,
-
         case
             when coalesce(p.total_page_views, 0) > 0 then 1
             else 0
@@ -90,20 +73,13 @@ final as (
         case
             when coalesce(i.add_to_cart_events, 0) > 0 then 1
             else 0
-        end as has_add_to_cart,
-
-        case
-            when coalesce(o.total_orders, 0) > 0 then 1
-            else 0
-        end as has_order
+        end as has_add_to_cart
 
     from sessions as s
     left join page_view_metrics as p
         on s.session_id = p.session_id
     left join item_view_metrics as i
         on s.session_id = i.session_id
-    left join order_metrics as o
-        on s.session_id = o.session_id
 
 )
 
