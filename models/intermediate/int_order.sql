@@ -1,6 +1,6 @@
 with orders as (
 
-    select
+    select distinct
         order_id,
         session_id,
         order_at_ts,
